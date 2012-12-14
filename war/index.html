@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>URL to Data URI Converter</title>
+<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+</head>
+<body>
+	<div class="container">
+		<div class="hero-unit">
+			<h1>URL to Data URI Converter</h1>
+		</div>
+		<form>
+			<div class="input-append">
+				<input type="url" class="span6" name="url" id="url" placeholder="input url here" required="required" />
+				<button class="btn" type="submit">Get Data URI</button>
+			</div>
+		</form>
+		<textarea id="output" style="width: 100%; height: 300px;"></textarea>
+		<button id="btn-open" class="btn"><i class="icon-share"></i> open with new window</button>
+	</div>
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<script>
+		$(function($) {
+			$('form').on('submit', function(e) {
+				e.preventDefault();
+
+				$.ajax('get', {
+					data : {
+						url : $('#url').val()
+					}
+				}).done(function(res) {
+					$('#output').val(res);
+				});
+			});
+
+			$('#btn-open').on('click', function() {
+				var url = $('#output').val();
+				if (url) {
+					window.open(url);
+				}
+			});
+
+			$('#output').on('click', function(){
+				$(this).select();
+			});
+		});
+	</script>
+</body>
+</html>
