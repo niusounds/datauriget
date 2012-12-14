@@ -10,19 +10,37 @@
 		<div class="hero-unit">
 			<h1>URL to Data URI Converter</h1>
 		</div>
-		<form>
+
+		<div id="alert-attention" class="alert hide">
+			<button class="close" data-dismiss="alert">&times;</button>
+			<p>
+				<strong>ATTENTION!</strong> Submitting too large contents is cause to browser freezing.
+			</p>
+		</div>
+
+		<form id="form-url">
 			<div class="input-append">
 				<input type="url" class="span6" name="url" id="url" placeholder="input url here" required="required" />
 				<button class="btn" type="submit">Get Data URI</button>
 			</div>
 		</form>
+		<p>or</p>
+		<form id="form-file" method="post" enctype="multipart/form-data" action="get" target="hidden">
+			<input type="file" class="span6" name="file" placeholder="file upload" required="required" />
+			<input type="hidden" name="cleanSVG" value="true"/>
+			<button class="btn" type="submit">Get Data URI</button>
+		</form>
 		<textarea id="output" style="width: 100%; height: 300px;"></textarea>
-		<button id="btn-open" class="btn"><i class="icon-share"></i> open with new window</button>
+		<button id="btn-open" class="btn">
+			<i class="icon-share"></i> open with new window
+		</button>
 	</div>
+	<iframe id="iframe-hidden" name="hidden" class="hide"></iframe>
 	<script src="js/jquery-1.8.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 	<script>
 		$(function($) {
-			$('form').on('submit', function(e) {
+			$('#form-url').on('submit', function(e) {
 				e.preventDefault();
 
 				$.ajax('get', {
@@ -41,9 +59,23 @@
 				}
 			});
 
-			$('#output').on('click', function(){
+			$('#output').on('click', function() {
 				$(this).select();
 			});
+
+			$('#iframe-hidden').on('load', function() {
+				var url = $(this.contentWindow.document.body).text();
+				if (url) {
+					$('#output').val(url);
+				}
+			});
+
+			if (sessionStorage && !sessionStorage.attention) {
+				$('#alert-attention').removeClass('hide');
+				$('#alert-attention').on('closed', function() {
+					sessionStorage.attention = 1;
+				});
+			}
 		});
 	</script>
 </body>
